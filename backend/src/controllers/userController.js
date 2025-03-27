@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const secretKey = 'seu_segredo_super_secreto';
+const secretKey = process.env.JWT_SECRET;
 const prisma = new PrismaClient();
 
 export const registerUser = async (req, res) => {

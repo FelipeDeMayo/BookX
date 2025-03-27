@@ -7,13 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       Int       @id @default(autoincrement())
-  name     String
-  email    String    @unique
-  password String
-  posts    Post[]
-  comments Comment[]
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  userId    Int
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], map: "Comment_postId_fkey")
+  user      User     @relation(fields: [userId], references: [id], map: "Comment_userId_fkey")
+
+  @@index([postId], map: "Comment_postId_fkey")
+  @@index([userId], map: "Comment_userId_fkey")
 }
 
 model Post {
@@ -23,16 +27,18 @@ model Post {
   imageUrl  String?
   createdAt DateTime  @default(now())
   userId    Int
-  user      User      @relation(fields: [userId], references: [id])
   comments  Comment[]
+  user      User      @relation(fields: [userId], references: [id], map: "Post_userId_fkey")
+
+  @@index([userId], map: "Post_userId_fkey")
 }
 
-model Comment {
-  id        Int      @id @default(autoincrement())
-  content   String
-  createdAt DateTime @default(now())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  postId    Int
-  post      Post     @relation(fields: [postId], references: [id])
+model User {
+  id       Int       @id @default(autoincrement())
+  name     String
+  email    String    @unique(map: "User_email_key")
+  password String
+  token    String    @default("") // Evita problemas se for obrigatório
+  comments Comment[]
+  posts    Post[]
 }

@@ -10,7 +10,12 @@ const port = 3000;
 app.use(cors());
 
 app.use(express.json());
+
 app.use('/user', userRoutes);
+
+app.use('/authtoken', userRoutes);
+
+app.use('/posts', userRoutes);
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
